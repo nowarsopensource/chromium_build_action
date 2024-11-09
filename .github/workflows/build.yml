@@ -24,17 +24,20 @@ jobs:
     - name: Fetch Depot Tools
       run: |
         git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
-        export PATH=$PATH:$(pwd)/depot_tools
+        echo "Adding depot_tools to PATH"
+        echo "PATH=$PATH:$(pwd)/depot_tools" >> $GITHUB_ENV
 
     - name: Sync and Configure
       working-directory: ./chromium
       run: |
+        export PATH=$PATH:$(pwd)/../../depot_tools
         gclient sync
         gn gen out/Default --args='is_debug=false'
 
     - name: Build Chromium
       working-directory: ./chromium
       run: |
+        export PATH=$PATH:$(pwd)/../../depot_tools
         ninja -C out/Default chrome
 
     - name: Upload Artifact
